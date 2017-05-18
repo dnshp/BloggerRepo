@@ -14,7 +14,7 @@ AND_training = [
 	[np.array([1.0, 0.0, 1.0]), 0],
 	[np.array([1.0, 1.0, 1.0]), 1]
 ]
-test = [i[0] for i in OR_training]
+test = [i[0] for i in AND_training]
 learning_rate = 0.01
 iterations = 500
 
@@ -28,7 +28,10 @@ def train(training_data, learning_rate, iterations):
 			actual = step_func(weights.dot(d[0]), threshold)
 			expected = d[1]
 			threshold -= learning_rate * (expected - actual)
-			weights = weights * (1 + (learning_rate * (expected - actual)))
+			# weights = weights * (1 + (learning_rate * (expected - actual)))
+			for j in range(d[0].shape[0]):
+				if d[0][j]:
+					weights[j] = weights[j] * (1 + (learning_rate * (expected - actual)))
 
 	return weights, threshold
 
@@ -41,7 +44,7 @@ def classify(weights, threshold, data):
 
 	return outputs
 
-weights, threshold = train(OR_training, learning_rate, iterations)
+weights, threshold = train(AND_training, learning_rate, iterations)
 print(weights)
 print(threshold)
 print(classify(weights, threshold, test))
